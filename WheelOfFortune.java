@@ -42,16 +42,63 @@ public class WheelOfFortune {
         Collections.shuffle(userNameList);
     }
 
-    public static void play(String wonderedWord, String wonderedWordExplanation ){
-        System.out.println("Отлично! Тогда начинаем нашу игру!");
-        System.out.println("Наше загаданное слово состоит из " + wonderedWord.length() + " букв");
-        System.out.println(wonderedWordExplanation);
+    public static void rules(String wonderedWord, String wonderedWordExplanation ){
+
         System.out.println("Напоминаю правила! Слово имеет 1000 очков, за каждую правильно отгаданную букву вам начисляются очки");
-        System.out.println("");
-        for(int i = 0; i < amountOfPlayers; i++){
-            System.out.println(userNameList.get(i) + "!");
+        System.out.println("Если вы решитесь отгадать слово полностью: за правильную попытку вы сразу выигрываете, а если нет то извините");
+        System.out.println("Отлично! Тогда начинаем нашу игру!");
+        System.out.println("Загаданное слово состоит из " + wonderedWord.length() + " букв");
+        System.out.println(wonderedWordExplanation);
+    }
+
+
+    public static void play(String wonderedWord, String wonderedWordExplanation) {
+        String input;
+
+        char[] charArrayOfWonderedWord = wonderedWord.toCharArray();
+        String[] arrayOfWonderedWord = new String[wonderedWord.length()];
+
+        for (int i = 0; i < arrayOfWonderedWord.length; i++) {
+            arrayOfWonderedWord[i] = charArrayOfWonderedWord[i] + "";
         }
-        System.out.println(wonderedWord + "!");
+
+        String[] arrayOfHiddenWord = new String[wonderedWord.length()];
+        ArrayList<Integer> usersScoreList = new ArrayList<>(userNameList.size());
+
+        for (int i = 0; i < arrayOfWonderedWord.length; i++) {
+            System.out.print(arrayOfWonderedWord[i] + " ");
+        }
+        for (int i = 0; i < arrayOfWonderedWord.length; i++) {
+            arrayOfHiddenWord[i] = " [ ] ";
+        }
+        int numberOfLettersInWonderedWord = wonderedWord.length();
+        int totalScore = 1000;
+
+        while(numberOfLettersInWonderedWord != 0){
+
+            input = sc.nextLine();
+            boolean inputContainsLetterOfWonderedWord = wonderedWord.contains(input);
+            boolean inputIsLetter = input.length() == 1;
+
+            if(inputIsLetter){
+                if(inputContainsLetterOfWonderedWord){
+                    for (int i = 0; i < arrayOfWonderedWord.length; i++) {
+                        if(arrayOfWonderedWord[i].equals(input)){
+                            arrayOfHiddenWord[i] = " " + arrayOfWonderedWord[i] + " ";
+                            numberOfLettersInWonderedWord--;
+                            int userScore = usersScoreList.get(i);
+                            userScore += 100;
+                            usersScoreList.add(i, userScore);
+                        }
+
+                    }
+                }
+            }
+            for (int i = 0; i < arrayOfWonderedWord.length; i++) {
+                System.out.print(arrayOfHiddenWord[i]);
+            }
+        }
+
 
 
     }
@@ -69,12 +116,15 @@ public class WheelOfFortune {
         wordsExplanation.add("В 1744 году английский химик Джозеф Пристли заметил, что при нагревании окиси ртути выделяется газ. Если поднести к нему свечу, пламя вспыхивает ярче. В те времена учёные полагали, что при горении вещества теряют особую субстанцию – “флогистон” (от греч. “пламя”). Пристли назвал открытый им газ “обезфлогистоженным воздухом”. Как этот газ называют современные химики?");
         wordsExplanation.add("Что раньше называли “костотрясом”, “пауком”, а теперь называют “быстрой ногой”?");
         wordsExplanation.add("Это слово в переводе с греческого языка означает “украшенный мир, прекрасно устроенный мир”. А в том значении, к которому мы привыкли, его впервые стал употреблять Пифагор.");
+
+
         callIntroduction();
 
 
         int wonderedIndex = random.nextInt(wordsList.size());
         String wonderedWord = wordsList.get(wonderedIndex);
         String wonderedWordExplanation = wordsExplanation.get(wonderedIndex);
+        rules(wonderedWord, wonderedWordExplanation);
         play(wonderedWord, wonderedWordExplanation);
 
     }
